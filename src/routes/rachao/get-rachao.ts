@@ -3,7 +3,7 @@ import { prisma } from "../../lib/prisma";
 import z from "zod";
 
 export async function getRachao(app: FastifyInstance) {
-    app.get('/rachao/rachaoId', async (req, res) => {
+    app.get('/rachao/:rachaoId', async (req, res) => {
         const paramsValidation = z.object({
             rachaoId: z.string().cuid()
         })
