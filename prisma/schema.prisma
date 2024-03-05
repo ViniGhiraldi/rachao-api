@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Rachao {
+  id String @id @default(cuid())
+  nome String
+  senha String
+  modalidade String
+  diahora DateTime
+  local String
+  regras String?
+  custoTotal Decimal @default(0)
+  custoPessoa Decimal @default(0)
+  status Boolean @default(true)
+
+  times Times[]
+  jogadores Jogadores[]
+  despesas Despesas[]
+  resultados Resultados[]
+}
+
+model Times {
+  id String @id @default(cuid())
+  rachaoId String
+  nome String
+
+  imagem Imagem?
+  jogadores Jogadores[]
+  resultadosTimeCasa Resultados[] @relation("timeCasa")
+  resultadosTimeVisitante Resultados[] @relation("timeVisitante")
+  resultadosTimeVencedor Resultados[] @relation("timeVencedor")
+  rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
+}
+
+model Jogadores {
+  id String @id @default(cuid())
+  timeId String?
+  rachaoId String
+  nome String
+  nota Decimal @default(0)
+  presenca Boolean @default(true)
+
+  imagem Imagem?
+  rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
+  time Times? @relation(fields: [timeId], references: [id], onDelete: Cascade)
+}
+
+model Despesas {
+  id String @id @default(cuid())
+  rachaoId String
+  titulo String
+  quantidade Int
+  custoUnitario Decimal
+  custoTotal Decimal
+
+  rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
+}
+
+model Resultados {
+  id String @id @default(cuid())
+  rachaoId String
+  timeCasaId String
+  timeVisitanteId String
+  timeVencedorId String?
+  resultado String
+  duracao String
+
+  rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
+  timeCasa Times @relation("timeCasa", fields: [timeCasaId], references: [id], onDelete: Cascade)
+  timeVisitante Times @relation("timeVisitante", fields: [timeVisitanteId], references: [id], onDelete: Cascade)
+  timeVencedor Times? @relation("timeVencedor", fields: [timeVencedorId], references: [id], onDelete: Cascade)
+}
+
+model Imagem {
+  id String @id @default(cuid())
+  path String
+  size Int
+  name String
+  url String
+
+  timeId String? @unique
+  jogadorId String? @unique
+  time Times? @relation(fields: [timeId], references: [id], onDelete: Cascade)
+  jogador Jogadores? @relation(fields: [jogadorId], references: [id], onDelete: Cascade)
+}
