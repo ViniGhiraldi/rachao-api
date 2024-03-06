@@ -2,11 +2,19 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/prisma";
 import z from "zod";
 
-export async function getRachao(app: FastifyInstance) {
+export async function getFullRachao(app: FastifyInstance) {
     app.get('/rachao/:rachaoId', async (req, res) => {
         const paramsValidation = z.object({
             rachaoId: z.string().cuid()
         })
+
+        /* const queryValidation = z.object({
+            jogadores: z.string().toLowerCase().default('true').transform((x) => x === 'true').pipe(z.boolean()),
+            times: z.string().toLowerCase().default('true').transform((x) => x === 'true').pipe(z.boolean()),
+            despesas: z.string().toLowerCase().default('true').transform((x) => x === 'true').pipe(z.boolean()),
+            resultados: z.string().toLowerCase().default('true').transform((x) => x === 'true').pipe(z.boolean()),
+            count: z.string().toLowerCase().default('true').transform((x) => x === 'true').pipe(z.boolean())
+        }) */
 
         const { rachaoId } = paramsValidation.parse(req.params);
 
@@ -25,6 +33,7 @@ export async function getRachao(app: FastifyInstance) {
                     status: true,
                     custoTotal: true,
                     custoPessoa: true,
+                    createdAt: true,
                     jogadores: {
                         select: {
                             id: true,
@@ -44,8 +53,12 @@ export async function getRachao(app: FastifyInstance) {
                                 select: {
                                     nome: true
                                 }
-                            }
+                            },
+                            createdAt: true
                         },
+                        orderBy: {
+                            nome: "asc"
+                        }
                     },
                     times: {
                         select: {
@@ -66,6 +79,9 @@ export async function getRachao(app: FastifyInstance) {
                                     nome: true,
                                     imagem: true,
                                     presenca: true,
+                                },
+                                orderBy: {
+                                    nome: "asc"
                                 }
                             },
                             _count: {
@@ -73,6 +89,9 @@ export async function getRachao(app: FastifyInstance) {
                                     jogadores: true
                                 }
                             }
+                        },
+                        orderBy: {
+                            nome: "asc"
                         }
                     },
                     despesas: {
@@ -82,6 +101,9 @@ export async function getRachao(app: FastifyInstance) {
                             custoUnitario: true,
                             quantidade: true,
                             custoTotal: true
+                        },
+                        orderBy: {
+                            titulo: "asc"
                         }
                     },
                     resultados: {
@@ -130,7 +152,11 @@ export async function getRachao(app: FastifyInstance) {
                                 }
                             },
                             resultado: true,
-                            duracao: true
+                            duracao: true,
+                            createdAt: true
+                        },
+                        orderBy: {
+                            createdAt: "desc"
                         }
                     },
                     _count: {
