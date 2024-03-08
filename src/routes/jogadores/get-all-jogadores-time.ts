@@ -2,23 +2,18 @@ import { FastifyInstance } from "fastify";
 import z from "zod";
 import { prisma } from "../../lib/prisma";
 
-export async function getAllJogadores(app: FastifyInstance) {
-    app.get('/jogadores/all/:rachaoId', async (req, res) => {
+export async function getAllJogadoresTime(app: FastifyInstance) {
+    app.get('/jogadores/time/:timeId', async (req, res) => {
         const paramsValidation = z.object({
-            rachaoId: z.string().cuid()
+            timeId: z.string().cuid()
         })
 
-        const queryValidation = z.object({
-            list: z.enum(["presenca", "time"]).optional()
-        })
-
-        const { rachaoId } = paramsValidation.parse(req.params);
-        const { list } = queryValidation.parse(req.query);
+        const { timeId } = paramsValidation.parse(req.params);
 
         try {
             const result = await prisma.jogadores.findMany({
                 where: {
-                    rachaoId: rachaoId
+                    timeId: timeId
                 },
                 select: {
                     id: true,
@@ -42,19 +37,9 @@ export async function getAllJogadores(app: FastifyInstance) {
                     },
                 },
                 orderBy: {
-                    presenca: "desc"
+                    presenca: "desc",
                 }
             })
-            
-            if(list === "presenca"){
-                const confirmado = result.filter(jogador => jogador.presenca);
-                const pendente = result.filter(jogador => !jogador.presenca);
-                return res.status(200).send({data: {confirmado, pendente}});
-            }else if(list === "time"){
-                const comTime = result.filter(jogador => jogador.time);
-                const semTime = result.filter(jogador => !jogador.time);
-                return res.status(200).send({data: {comTime, semTime}});
-            }
 
             return res.status(200).send({data: result});
         } catch (error) {

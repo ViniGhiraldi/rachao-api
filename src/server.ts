@@ -13,6 +13,8 @@ import { putTime } from "./routes/times/put-time";
 import { deleteTime } from "./routes/times/delete-time";
 import { createJogador } from "./routes/jogadores/create-jogador";
 import { getAllJogadores } from "./routes/jogadores/get-all-jogadores";
+import { getAllJogadoresTime } from "./routes/jogadores/get-all-jogadores-time";
+import { putJogador } from "./routes/jogadores/put-jogador";
 
 const server = fastify();
 
@@ -35,5 +37,7 @@ server.register(deleteTime);
 // Jogadores
 server.register(createJogador);
 server.register(getAllJogadores);
+server.register(getAllJogadoresTime);
+server.register(putJogador);
 
 server.listen({ port: Number(process.env.PORT) || 3333 }, () => console.log(new Date()))
