@@ -1,24 +1,37 @@
 import { FastifyInstance } from "fastify";
-import { prisma } from "../../lib/prisma";
 import z from "zod";
+import { prisma } from "../../lib/prisma";
 
-export async function getAllTimes(app: FastifyInstance) {
-    app.get('/times/all/:rachaoId', async (req, res) => {
+export async function getAllJogadores(app: FastifyInstance) {
+    app.get('/jogadores/:rachaoId', async (req, res) => {
         const paramsValidation = z.object({
             rachaoId: z.string().cuid()
         })
 
+        const queryValidation = z.object({
+            timeId: z.string().cuid().optional()
+        })
+
         const { rachaoId } = paramsValidation.parse(req.params);
+        const { timeId } = queryValidation.parse(req.query);
 
         try {
-            const result = await prisma.times.findMany({
+            const result = await prisma.jogadores.findMany({
                 where: {
-                    rachaoId: rachaoId
+                    rachaoId: rachaoId,
+                    timeId: timeId
                 },
                 select: {
                     id: true,
-                    createdAt: true,
                     nome: true,
+                    createdAt: true,
+                    nota: true,
+                    presenca: true,
+                    time: {
+                        select: {
+                            nome: true
+                        }
+                    },
                     imagem: {
                         select: {
                             id: true,
@@ -28,15 +41,6 @@ export async function getAllTimes(app: FastifyInstance) {
                             url: true
                         }
                     },
-                    resultadosTimeVencedor: true,
-                    _count: {
-                        select: {
-                            jogadores: true
-                        }
-                    }
-                },
-                orderBy: {
-                    nome: 'asc'
                 }
             })
 

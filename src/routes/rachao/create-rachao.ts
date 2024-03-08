@@ -20,6 +20,7 @@ export async function createRachao(app: FastifyInstance) {
             const result = await prisma.rachao.create({
                 data: data,
                 select: {
+                    id: true,
                     nome: true,
                     modalidade: true,
                     local: true,
