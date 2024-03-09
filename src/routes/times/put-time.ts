@@ -25,7 +25,7 @@ export async function putTime(app: FastifyInstance) {
 
         try {
             let result;
-            if(file){
+            if(deleteImagem){
                 result = await prisma.times.update({
                     where: {
                         id: timeId
@@ -33,37 +33,17 @@ export async function putTime(app: FastifyInstance) {
                     data: {
                         nome: nome,
                         imagem: {
-                            upsert: {
-                                update:{
-                                    name: file.filename,
-                                    path: file.path,
-                                    size: file.size,
-                                    url: `${process.env.IMAGES_URL}/${file.filename}`
-                                },
-                                create: {
-                                    name: file.filename,
-                                    path: file.path,
-                                    size: file.size,
-                                    url: `${process.env.IMAGES_URL}/${file.filename}`
-                                }
+                            delete:{
+                                timeId: timeId
                             }
                         }
                     },
                     select: {
-                        nome: true,
-                        imagem: {
-                            select: {
-                                id: true,
-                                name: true,
-                                path: true,
-                                size: true,
-                                url: true
-                            }
-                        }
+                        nome: true
                     }
                 })
             }else{
-                if(deleteImagem){
+                if(file){
                     result = await prisma.times.update({
                         where: {
                             id: timeId
@@ -71,13 +51,33 @@ export async function putTime(app: FastifyInstance) {
                         data: {
                             nome: nome,
                             imagem: {
-                                delete:{
-                                    timeId: timeId
+                                upsert: {
+                                    update:{
+                                        name: file.filename,
+                                        path: file.path,
+                                        size: file.size,
+                                        url: `${process.env.IMAGES_URL}/${file.filename}`
+                                    },
+                                    create: {
+                                        name: file.filename,
+                                        path: file.path,
+                                        size: file.size,
+                                        url: `${process.env.IMAGES_URL}/${file.filename}`
+                                    }
                                 }
                             }
                         },
                         select: {
-                            nome: true
+                            nome: true,
+                            imagem: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    path: true,
+                                    size: true,
+                                    url: true
+                                }
+                            }
                         }
                     })
                 }else{
