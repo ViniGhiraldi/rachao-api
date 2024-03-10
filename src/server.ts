@@ -1,22 +1,10 @@
-import fastify from "fastify";
 import 'dotenv/config';
-import { createRachao } from "./routes/rachao/create-rachao";
-import { putRachao } from "./routes/rachao/put-rachao";
-import { deleteRachao } from "./routes/rachao/delete-rachao";
-import { getFullRachao } from "./routes/rachao/get-full-rachao";
-import { getAllRachao } from "./routes/rachao/get-all-rachao";
+import fastify from "fastify";
 import multer from "fastify-multer";
-import { createTime } from "./routes/times/create-time";
-import { getAllTimes } from "./routes/times/get-all-times";
-import { getTime } from "./routes/times/get-time";
-import { putTime } from "./routes/times/put-time";
-import { deleteTime } from "./routes/times/delete-time";
-import { createJogador } from "./routes/jogadores/create-jogador";
-import { getAllJogadores } from "./routes/jogadores/get-all-jogadores";
-import { getAllJogadoresTime } from "./routes/jogadores/get-all-jogadores-time";
-import { putJogador } from "./routes/jogadores/put-jogador";
-import { deleteJogador } from "./routes/jogadores/delete-jogador";
-import { getJogador } from "./routes/jogadores/get-jogador";
+import { createTime, deleteTime, getAllTimes, getTime, putTime } from "./routes/times";
+import { createRachao, deleteRachao, getAllRachao, getRachao, putRachao } from "./routes/rachao";
+import { createJogador, deleteJogador, getAllJogadores, getAllJogadoresTime, getJogador, putJogador } from "./routes/jogadores";
+import { createDespesa, deleteDespesa, getAllDespesas, getDespesa, putDespesa } from "./routes/despesas";
 
 const server = fastify();
 
@@ -26,7 +14,7 @@ server.register(multer.contentParser);
 server.register(createRachao);
 server.register(putRachao);
 server.register(deleteRachao);
-server.register(getFullRachao);
+server.register(getRachao);
 server.register(getAllRachao);
 
 // Times
@@ -43,5 +31,12 @@ server.register(getAllJogadoresTime);
 server.register(getJogador);
 server.register(putJogador);
 server.register(deleteJogador);
+
+// Despesas
+server.register(createDespesa);
+server.register(getAllDespesas);
+server.register(getDespesa);
+server.register(putDespesa);
+server.register(deleteDespesa);
 
 server.listen({ port: Number(process.env.PORT) || 3333 }, () => console.log(new Date()))

@@ -17,9 +17,9 @@ export async function putJogador(app: FastifyInstance) {
 
         const bodyValidation = z.object({
             timeId: z.string().cuid().optional(),
-            nome: z.string().trim(),
+            nome: z.string().trim().optional(),
             presenca: z.boolean().optional(),
-            nota: z.number().nonnegative().transform(val => Number(val.toFixed(2))).optional()
+            nota: z.string().transform(val => Number(Number(val).toFixed(2))).optional()
         })
 
         const { jogadorId } = paramsValidation.parse(req.params);

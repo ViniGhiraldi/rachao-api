@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/prisma";
 import z from "zod";
 
-export async function getFullRachao(app: FastifyInstance) {
+export async function getRachao(app: FastifyInstance) {
     app.get('/rachao/:rachaoId', async (req, res) => {
         const paramsValidation = z.object({
             rachaoId: z.string().cuid()
