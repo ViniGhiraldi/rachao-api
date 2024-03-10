@@ -19,7 +19,7 @@ export async function putJogador(app: FastifyInstance) {
             timeId: z.string().cuid().optional(),
             nome: z.string().trim(),
             presenca: z.boolean().optional(),
-            nota: z.number().nonnegative().optional()
+            nota: z.number().nonnegative().transform(val => Number(val.toFixed(2))).optional()
         })
 
         const { jogadorId } = paramsValidation.parse(req.params);
