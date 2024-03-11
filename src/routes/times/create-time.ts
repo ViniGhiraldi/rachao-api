@@ -18,8 +18,6 @@ export async function createTime(app: FastifyInstance) {
         const { nome } = bodyValidation.parse(req.body);
         const file = (req as any).file as FileType;
 
-        console.log(file)
-
         try {
             let result;
             if(file){
