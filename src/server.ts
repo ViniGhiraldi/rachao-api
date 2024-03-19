@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import fastify from "fastify";
+import { fastifyCors } from '@fastify/cors';
 import multer from "fastify-multer";
 import { createTime, deleteTime, getAllTimes, getTime, putTime } from "./routes/times";
 import { createRachao, deleteRachao, getAllRachao, getRachao, putRachao } from "./routes/rachao";
@@ -8,6 +9,10 @@ import { createDespesa, deleteDespesa, getAllDespesas, getDespesa, putDespesa } 
 import { createResultado, deleteResultado, getAllResultados, getAllResultadosTime, getResultado, putResultado } from './routes/resultados';
 
 const server = fastify();
+
+server.register(fastifyCors, {
+    origin: '*'
+});
 
 server.register(multer.contentParser);
 
