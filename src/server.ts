@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import fastify from "fastify";
+import cookie from '@fastify/cookie';
 import { fastifyCors } from '@fastify/cors';
 import multer from "fastify-multer";
 import { createTime, deleteTime, getAllTimes, getTime, putTime } from "./routes/times";
@@ -13,6 +14,11 @@ const server = fastify();
 server.register(fastifyCors, {
     origin: '*'
 });
+
+server.register(cookie, {
+    secret: '6fef4d7a37dac4b4392bd1370cef3385',
+    hook: 'onRequest'
+})
 
 server.register(multer.contentParser);
 
