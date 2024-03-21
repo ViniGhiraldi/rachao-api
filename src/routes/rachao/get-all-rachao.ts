@@ -1,11 +1,14 @@
 import { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/prisma";
+import z from "zod";
 
 export async function getAllRachao(app: FastifyInstance) {
-    app.get('/rachao/all', async (req, res) => {
-        let { sessionId } = req.cookies;
+    app.get('/rachao/all/:sessionId', async (req, res) => {
+        const paramsValidation = z.object({
+            sessionId: z.string().uuid()
+        })
 
-        if(!sessionId) return res.status(401).send({data: {message: "Não foi possível encontrar nenhum registro."}});
+        const { sessionId } = paramsValidation.parse(req.params);
 
         try {
             const result = await prisma.rachao.findMany({
@@ -30,6 +33,7 @@ export async function getAllRachao(app: FastifyInstance) {
                     createdAt: "desc"
                 }
             })
+
 
             return res.status(200).send({data: result});
         } catch (error) {

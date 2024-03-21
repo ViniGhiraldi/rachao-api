@@ -5,6 +5,11 @@ import { randomUUID } from "crypto";
 
 export async function createRachao(app: FastifyInstance) {
     app.post('/rachao', async (req, res) => {
+        console.log(req)
+        const queryValidation = z.object({
+            sessionId: z.string().uuid().optional()
+        })
+
         const bodyValidation = z.object({
             nome: z.string().trim(),
             senha: z.string(),
@@ -15,26 +20,18 @@ export async function createRachao(app: FastifyInstance) {
             status: z.boolean().default(true)
         })
 
+        let { sessionId } = queryValidation.parse(req.query);
         const data = bodyValidation.parse(req.body);
-
-        let { sessionId } = req.cookies;
 
         if(!sessionId){
             sessionId = randomUUID();
-
-            res.setCookie('sessionId', sessionId, {
-                path: '/',
-                maxAge: 60 * 60 * 24 * 60, // 60 days
-                signed: true,
-                httpOnly: true
-            })
         }
 
         try {
             const result = await prisma.rachao.create({
                 data: {
                     ...data,
-                    sessionId
+                    sessionId: sessionId
                 },
                 select: {
                     id: true,
@@ -42,7 +39,8 @@ export async function createRachao(app: FastifyInstance) {
                     modalidade: true,
                     local: true,
                     diahora: true,
-                    status: true
+                    status: true,
+                    sessionId: true
                 }
             })
 

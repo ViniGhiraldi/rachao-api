@@ -21,7 +21,7 @@ model Rachao {
   custoTotal Decimal @default(0)
   custoPessoa Decimal @default(0)
   status Boolean @default(true)
-  sessionId String @unique
+  sessionId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
