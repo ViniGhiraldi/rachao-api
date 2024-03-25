@@ -11,7 +11,7 @@ export async function createJogador(app: FastifyInstance) {
         })
 
         const bodyValidation = z.object({
-            nome: z.string().trim(),
+            nome: z.string().trim().min(1),
             presenca: z.enum(["true", "false"]).default("true").transform(val => val === "true")
         })
 

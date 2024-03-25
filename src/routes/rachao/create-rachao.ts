@@ -11,11 +11,11 @@ export async function createRachao(app: FastifyInstance) {
         })
 
         const bodyValidation = z.object({
-            nome: z.string().trim(),
-            senha: z.string(),
-            modalidade: z.string().toLowerCase().trim(),
+            nome: z.string().trim().min(1),
+            senha: z.string().min(5),
+            modalidade: z.string().toLowerCase().trim().min(1),
             diahora: z.coerce.date(),
-            local: z.string().trim(),
+            local: z.string().trim().min(1),
             regras: z.string().trim().optional(),
             status: z.boolean().default(true)
         })

@@ -9,10 +9,10 @@ export async function putRachao(app: FastifyInstance) {
         })
 
         const bodyValidation = z.object({
-            nome: z.string().trim().optional(),
-            modalidade: z.string().toLowerCase().trim().optional(),
+            nome: z.string().trim().min(1).optional(),
+            modalidade: z.string().toLowerCase().trim().min(1).optional(),
             diahora: z.coerce.date().optional(),
-            local: z.string().trim().optional(),
+            local: z.string().trim().min(1).optional(),
             regras: z.string().trim().optional(),
             status: z.boolean().optional()
         })

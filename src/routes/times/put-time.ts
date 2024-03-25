@@ -15,7 +15,7 @@ export async function putTime(app: FastifyInstance) {
         })
 
         const bodyValidation = z.object({
-            nome: z.string().trim().optional()
+            nome: z.string().trim().min(1).optional()
         })
 
         const { timeId } = paramsValidation.parse(req.params);

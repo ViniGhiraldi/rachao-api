@@ -11,7 +11,7 @@ export async function createTime(app: FastifyInstance) {
         })
         
         const bodyValidation = z.object({
-            nome: z.string().trim()
+            nome: z.string().trim().min(1)
         })
         
         const { rachaoId } = paramsValidation.parse(req.params);

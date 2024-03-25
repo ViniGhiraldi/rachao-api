@@ -12,8 +12,8 @@ export async function createResultado(app: FastifyInstance) {
             timeCasaId: z.string().cuid(),
             timeVisitanteId: z.string().cuid(),
             timeVencedorId: z.string().cuid().optional(),
-            resultado: z.string().trim(),
-            duracao: z.string().trim()
+            resultado: z.string().trim().min(1),
+            duracao: z.string().trim().min(1)
         })
 
         const { rachaoId } = paramsValidation.parse(req.params);

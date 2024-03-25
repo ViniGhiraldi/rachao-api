@@ -9,7 +9,7 @@ export async function putDespesa(app: FastifyInstance) {
         })
 
         const bodyValidation = z.object({
-            titulo: z.string().trim().optional(),
+            titulo: z.string().trim().min(1).optional(),
             quantidade: z.number().int().nonnegative(),
             custoUnitario: z.number().nonnegative().transform(val => Number(val.toFixed(2)))
         })

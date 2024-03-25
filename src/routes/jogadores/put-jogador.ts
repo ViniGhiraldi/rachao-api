@@ -17,7 +17,7 @@ export async function putJogador(app: FastifyInstance) {
 
         const bodyValidation = z.object({
             timeId: z.string().cuid().optional(),
-            nome: z.string().trim().optional(),
+            nome: z.string().trim().min(1).optional(),
             presenca: z.boolean().optional(),
             nota: z.string().transform(val => Number(Number(val).toFixed(2))).optional()
         })
