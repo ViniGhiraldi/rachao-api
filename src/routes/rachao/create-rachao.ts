@@ -36,10 +36,6 @@ export async function createRachao(app: FastifyInstance) {
                 select: {
                     id: true,
                     nome: true,
-                    modalidade: true,
-                    local: true,
-                    diahora: true,
-                    status: true,
                     sessionId: true
                 }
             })

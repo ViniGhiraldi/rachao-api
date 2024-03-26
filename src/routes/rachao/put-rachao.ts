@@ -22,22 +22,16 @@ export async function putRachao(app: FastifyInstance) {
         const data = bodyValidation.parse(req.body);
 
         try {
-            const result = await prisma.rachao.update({
+            await prisma.rachao.update({
                 where: {
                     id: rachaoId
                 },
-                data: data,
-                select: {
-                    nome: true,
-                    modalidade: true,
-                    local: true,
-                    diahora: true,
-                    status: true,
-                    regras: true
-                }
+                data: data
             })
 
-            return res.status(200).send({data: result});
+            return res.status(200).send({data: {
+                message: 'Record updated successfully'
+            }});
         } catch (error) {
             return res.status(500).send({error});
         }
