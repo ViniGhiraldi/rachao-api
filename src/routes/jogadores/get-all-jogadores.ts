@@ -47,9 +47,9 @@ export async function getAllJogadores(app: FastifyInstance) {
             })
             
             if(list === "presenca"){
-                const confirmado = result.filter(jogador => jogador.presenca);
-                const pendente = result.filter(jogador => !jogador.presenca);
-                return res.status(200).send({data: {confirmado, pendente}});
+                const confirmados = result.filter(jogador => jogador.presenca);
+                const pendentes = result.filter(jogador => !jogador.presenca);
+                return res.status(200).send({data: {confirmados, pendentes}});
             }else if(list === "time"){
                 const comTime = result.filter(jogador => jogador.time);
                 const semTime = result.filter(jogador => !jogador.time);
