@@ -6,6 +6,7 @@ import { prisma } from "../../lib/prisma";
 
 export async function putJogador(app: FastifyInstance) {
     app.put('/jogadores/:jogadorId', { preHandler: upload.single('imagem') }, async (req, res) => {
+        
         const paramsValidation = z.object({
             jogadorId: z.string().cuid()
         })
@@ -18,7 +19,7 @@ export async function putJogador(app: FastifyInstance) {
         const bodyValidation = z.object({
             timeId: z.string().cuid().optional(),
             nome: z.string().trim().min(1).optional(),
-            presenca: z.boolean().optional(),
+            presenca: z.enum(["true", "false"]).transform(val => val === "true").optional(),
             nota: z.string().transform(val => Number(Number(val).toFixed(2))).optional()
         })
 
@@ -26,6 +27,8 @@ export async function putJogador(app: FastifyInstance) {
         const data = bodyValidation.parse(req.body);
         const { deleteImagem, deleteTime } = queryValidation.parse(req.query);
         const file = (req as any).file as FileType;
+        
+        console.log(data, file)
 
         try {
             let result;

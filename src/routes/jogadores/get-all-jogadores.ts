@@ -9,53 +9,91 @@ export async function getAllJogadores(app: FastifyInstance) {
         })
 
         const queryValidation = z.object({
-            list: z.enum(["presenca", "time"]).optional()
+            orderBy: z.enum(["presenca", "time"]).optional()
         })
 
         const { rachaoId } = paramsValidation.parse(req.params);
-        const { list } = queryValidation.parse(req.query);
+        const { orderBy } = queryValidation.parse(req.query);
 
         try {
-            const result = await prisma.jogadores.findMany({
-                where: {
-                    rachaoId: rachaoId
-                },
-                select: {
-                    id: true,
-                    nome: true,
-                    createdAt: true,
-                    nota: true,
-                    presenca: true,
-                    time: {
-                        select: {
-                            nome: true
-                        }
+            let result;
+            if(!orderBy || orderBy === 'presenca'){
+                result = await prisma.jogadores.findMany({
+                    where: {
+                        rachaoId: rachaoId
                     },
-                    imagem: {
-                        select: {
-                            id: true,
-                            name: true,
-                            path: true,
-                            size: true,
-                            url: true
-                        }
+                    select: {
+                        id: true,
+                        nome: true,
+                        createdAt: true,
+                        nota: true,
+                        presenca: true,
+                        time: {
+                            select: {
+                                nome: true
+                            }
+                        },
+                        imagem: {
+                            select: {
+                                id: true,
+                                name: true,
+                                path: true,
+                                size: true,
+                                url: true
+                            }
+                        },
                     },
-                },
-                orderBy: {
-                    presenca: "desc"
-                }
-            })
-            
-            if(list === "presenca"){
-                const confirmados = result.filter(jogador => jogador.presenca);
-                const pendentes = result.filter(jogador => !jogador.presenca);
-                return res.status(200).send({data: {confirmados, pendentes}});
-            }else if(list === "time"){
-                const comTime = result.filter(jogador => jogador.time);
-                const semTime = result.filter(jogador => !jogador.time);
-                return res.status(200).send({data: {comTime, semTime}});
+                    orderBy: [
+                        {
+                            presenca: 'desc'
+                        },
+                        {
+                            nome: 'asc'
+                        }
+                    ]
+                })
+            }else{
+                result = await prisma.jogadores.findMany({
+                    where: {
+                        rachaoId: rachaoId
+                    },
+                    select: {
+                        id: true,
+                        nome: true,
+                        createdAt: true,
+                        nota: true,
+                        presenca: true,
+                        time: {
+                            select: {
+                                nome: true
+                            }
+                        },
+                        imagem: {
+                            select: {
+                                id: true,
+                                name: true,
+                                path: true,
+                                size: true,
+                                url: true
+                            }
+                        },
+                    },
+                    orderBy: [
+                        {
+                            time: {
+                                nome: 'asc'
+                            }
+                        },
+                        {
+                            presenca: 'desc'
+                        },
+                        {
+                            nome: 'asc'
+                        }
+                    ]
+                })
             }
-
+            
             return res.status(200).send({data: result});
         } catch (error) {
             return res.status(500).send({error});
