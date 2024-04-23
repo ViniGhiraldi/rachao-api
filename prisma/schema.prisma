@@ -19,7 +19,6 @@ model Rachao {
   local String
   regras String?
   custoTotal Decimal @default(0)
-  custoPessoa Decimal @default(0)
   status Boolean @default(true)
   sessionId String
   createdAt DateTime @default(now())

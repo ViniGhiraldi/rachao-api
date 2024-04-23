@@ -34,7 +34,7 @@ export async function putDespesa(app: FastifyInstance) {
                 }
             })
 
-            return res.status(200).send({data: result});
+            return res.status(200).send({data: {...result, custoUnitario: Number(result?.custoUnitario), custoTotal: Number(result?.custoTotal)}});
         } catch (error) {
             return res.status(500).send({error});
         }

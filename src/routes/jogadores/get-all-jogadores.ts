@@ -93,8 +93,12 @@ export async function getAllJogadores(app: FastifyInstance) {
                     ]
                 })
             }
+
+            const formatedResult = result.map(jogador => {
+                return {...jogador, nota: Number(jogador.nota)}
+            })
             
-            return res.status(200).send({data: result});
+            return res.status(200).send({data: formatedResult});
         } catch (error) {
             return res.status(500).send({error});
         }

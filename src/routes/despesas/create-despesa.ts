@@ -33,7 +33,18 @@ export async function createDespesa(app: FastifyInstance) {
                 }
             })
 
-            return res.status(201).send({data: result});
+            await prisma.rachao.update({
+                where: {
+                    id: rachaoId
+                },
+                data: {
+                    custoTotal: {
+                        increment: result.custoTotal
+                    }
+                }
+            })
+
+            return res.status(201).send({data: {...result, custoUnitario: Number(result?.custoUnitario), custoTotal: Number(result?.custoTotal)}});
         } catch (error) {
             return res.status(500).send({error});
         }

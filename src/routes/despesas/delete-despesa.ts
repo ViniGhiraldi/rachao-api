@@ -3,17 +3,32 @@ import z from "zod";
 import { prisma } from "../../lib/prisma";
 
 export async function deleteDespesa(app: FastifyInstance) {
-    app.delete('/despesas/:despesaId', async (req, res) => {
+    app.delete('/despesas/:rachaoId/:despesaId', async (req, res) => {
         const paramsValidation = z.object({
+            rachaoId: z.string().cuid(),
             despesaId: z.string().cuid()
         })
 
-        const { despesaId } = paramsValidation.parse(req.params);
+        const { despesaId, rachaoId } = paramsValidation.parse(req.params);
 
         try {
-            await prisma.despesas.delete({
+            const result = await prisma.despesas.delete({
                 where: {
                     id: despesaId
+                },
+                select: {
+                    custoTotal: true
+                }
+            })
+
+            await prisma.rachao.update({
+                where: {
+                    id: rachaoId
+                },
+                data: {
+                    custoTotal: {
+                        increment: -result.custoTotal
+                    }
                 }
             })
             

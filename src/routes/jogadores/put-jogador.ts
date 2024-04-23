@@ -135,7 +135,7 @@ export async function putJogador(app: FastifyInstance) {
                 }
             }
 
-            return res.status(200).send({data: result});
+            return res.status(200).send({data: {...result, nota: Number(result.nota)}});
         } catch (error) {
             return res.status(500).send({error});
         }

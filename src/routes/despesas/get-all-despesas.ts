@@ -27,7 +27,11 @@ export async function getAllDespesas(app: FastifyInstance) {
                 }
             })
 
-            return res.status(200).send({data: result});
+            const formatedResult = result.map(despesa => {
+                return {...despesa, custoUnitario: Number(despesa.custoUnitario), custoTotal: Number(despesa.custoTotal)}
+            })
+
+            return res.status(200).send({data: formatedResult});
         } catch (error) {
             return res.status(500).send({error});
         }

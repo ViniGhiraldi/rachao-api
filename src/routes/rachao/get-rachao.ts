@@ -32,7 +32,6 @@ export async function getRachao(app: FastifyInstance) {
                     regras: true,
                     status: true,
                     custoTotal: true,
-                    custoPessoa: true,
                     createdAt: true,
                     resultados: {
                         select: {
@@ -98,7 +97,7 @@ export async function getRachao(app: FastifyInstance) {
                 }
             })
 
-            return res.status(200).send({data: result});
+            return res.status(200).send({data: {...result, custoTotal: Number(result?.custoTotal), custoPessoa: Number(result?.custoTotal) / (result?._count.jogadores || 1)}});
         } catch (error) {
             return res.status(500).send({error});
         }
