@@ -18,13 +18,31 @@ export async function putDespesa(app: FastifyInstance) {
         const data = bodyValidation.parse(req.body);
 
         try {
+            const currentDespesaCustoTotal = await prisma.despesas.findUnique({
+                where: {
+                    id: despesaId
+                },
+                select: {
+                    custoTotal: true
+                }
+            })
+
+            const newDespesaCustoTotal = Number((data.custoUnitario * data.quantidade).toFixed(2));
+
             const result = await prisma.despesas.update({
                 where: {
                     id: despesaId
                 },
                 data: {
                     ...data,
-                    custoTotal: Number((data.custoUnitario * data.quantidade).toFixed(2)),
+                    custoTotal: newDespesaCustoTotal,
+                    rachao: {
+                        update: {
+                            custoTotal: {
+                                increment: (newDespesaCustoTotal - Number(currentDespesaCustoTotal?.custoTotal))
+                            }
+                        }
+                    }
                 },
                 select: {
                     titulo: true,

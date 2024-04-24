@@ -3,13 +3,12 @@ import z from "zod";
 import { prisma } from "../../lib/prisma";
 
 export async function deleteDespesa(app: FastifyInstance) {
-    app.delete('/despesas/:rachaoId/:despesaId', async (req, res) => {
+    app.delete('/despesas/:despesaId', async (req, res) => {
         const paramsValidation = z.object({
-            rachaoId: z.string().cuid(),
             despesaId: z.string().cuid()
         })
 
-        const { despesaId, rachaoId } = paramsValidation.parse(req.params);
+        const { despesaId } = paramsValidation.parse(req.params);
 
         try {
             const result = await prisma.despesas.delete({
@@ -17,13 +16,14 @@ export async function deleteDespesa(app: FastifyInstance) {
                     id: despesaId
                 },
                 select: {
+                    rachaoId: true,
                     custoTotal: true
                 }
             })
 
             await prisma.rachao.update({
                 where: {
-                    id: rachaoId
+                    id: result.rachaoId
                 },
                 data: {
                     custoTotal: {
