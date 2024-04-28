@@ -28,10 +28,10 @@ export async function getAllTimes(app: FastifyInstance) {
                             url: true
                         }
                     },
-                    resultadosTimeVencedor: true,
                     _count: {
                         select: {
-                            jogadores: true
+                            jogadores: true,
+                            resultadosTimeVencedor: true
                         }
                     }
                 },
