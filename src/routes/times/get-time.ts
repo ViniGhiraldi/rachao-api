@@ -3,15 +3,16 @@ import z from "zod";
 import { prisma } from "../../lib/prisma";
 
 export async function getTime(app: FastifyInstance) {
-    app.get('/times/:timeId', async (req, res) => {
+    app.get('/times/:rachaoId/:timeId', async (req, res) => {
         const paramsValidation = z.object({
+            rachaoId: z.string().cuid(),
             timeId: z.string().cuid()
         })
 
-        const { timeId } = paramsValidation.parse(req.params);
+        const { rachaoId, timeId } = paramsValidation.parse(req.params);
 
         try {
-            const result = await prisma.times.findUnique({
+            const timeResult = await prisma.times.findUnique({
                 where: {
                     id: timeId
                 },
@@ -55,7 +56,39 @@ export async function getTime(app: FastifyInstance) {
                 }
             })
 
-            return res.status(200).send({data: result});
+            const allJogadoresInRachaoResult = await prisma.jogadores.findMany({
+                where: {
+                    AND: [
+                        {
+                            rachaoId: rachaoId
+                        },
+                        {
+                            timeId: {
+                                not: timeId
+                            }
+                        }
+                    ]
+                },
+                select: {
+                    id: true,
+                    nome: true,
+                    imagem: {
+                        select: {
+                            id: true,
+                            name: true,
+                            path: true,
+                            size: true,
+                            url: true
+                        }
+                    },
+                    presenca: true
+                },
+                orderBy: {
+                    nome: 'asc'
+                }
+            })
+
+            return res.status(200).send({data: {time: timeResult, jogadores: allJogadoresInRachaoResult}});
         } catch (error) {
             return res.status(500).send({error});
         }
