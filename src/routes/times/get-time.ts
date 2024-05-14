@@ -44,9 +44,14 @@ export async function getTime(app: FastifyInstance) {
                             },
                             presenca: true
                         },
-                        orderBy: {
-                            nome: 'asc'
-                        }
+                        orderBy: [
+                            {
+                                presenca: 'desc'
+                            },
+                            {
+                                nome: 'asc'
+                            }
+                        ]
                     },
                     _count: {
                         select: {
@@ -58,16 +63,12 @@ export async function getTime(app: FastifyInstance) {
 
             const allJogadoresInRachaoResult = await prisma.jogadores.findMany({
                 where: {
-                    AND: [
-                        {
-                            rachaoId: rachaoId
-                        },
-                        {
-                            timeId: {
-                                not: timeId
-                            }
+                    rachaoId: rachaoId,
+                    NOT: {
+                        time: {
+                            id: timeId
                         }
-                    ]
+                    }
                 },
                 select: {
                     id: true,
@@ -81,11 +82,26 @@ export async function getTime(app: FastifyInstance) {
                             url: true
                         }
                     },
-                    presenca: true
+                    presenca: true,
+                    time: {
+                        select: {
+                            nome: true
+                        }
+                    }
                 },
-                orderBy: {
-                    nome: 'asc'
-                }
+                orderBy: [
+                    {
+                        time: {
+                            nome: 'asc'
+                        }
+                    },
+                    {
+                        presenca: 'desc'
+                    },
+                    {
+                        nome: 'asc'
+                    }
+                ]
             })
 
             return res.status(200).send({data: {time: timeResult, jogadores: allJogadoresInRachaoResult}});

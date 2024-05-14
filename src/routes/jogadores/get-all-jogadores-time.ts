@@ -36,9 +36,14 @@ export async function getAllJogadoresTime(app: FastifyInstance) {
                         }
                     },
                 },
-                orderBy: {
-                    presenca: "desc",
-                }
+                orderBy: [
+                    {
+                        presenca: 'desc'
+                    },
+                    {
+                        nome: 'asc'
+                    }
+                ]
             })
 
             const formatedResult = result.map(jogador => {
