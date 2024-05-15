@@ -57,7 +57,7 @@ model Jogadores {
 
   imagem Imagem?
   rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
-  time Times? @relation(fields: [timeId], references: [id], onDelete: Cascade)
+  time Times? @relation(fields: [timeId], references: [id], onDelete: SetNull)
 }
 
 model Despesas {
@@ -87,7 +87,7 @@ model Resultados {
   rachao Rachao @relation(fields: [rachaoId], references: [id], onDelete: Cascade)
   timeCasa Times @relation("timeCasa", fields: [timeCasaId], references: [id], onDelete: Cascade)
   timeVisitante Times @relation("timeVisitante", fields: [timeVisitanteId], references: [id], onDelete: Cascade)
-  timeVencedor Times? @relation("timeVencedor", fields: [timeVencedorId], references: [id], onDelete: Cascade)
+  timeVencedor Times? @relation("timeVencedor", fields: [timeVencedorId], references: [id], onDelete: SetNull)
 }
 
 model Imagem {
