@@ -12,8 +12,8 @@ export async function putResultado(app: FastifyInstance) {
             timeCasaId: z.string().cuid(),
             timeVisitanteId: z.string().cuid(),
             timeVencedorId: z.string().cuid().optional(),
-            resultado: z.string().trim().min(1).optional(),
-            duracao: z.string().trim().min(1).optional()
+            timeVisitantePontos: z.number().int().nonnegative().optional(),
+            timeCasaPontos: z.number().int().nonnegative().optional()
         })
 
         const { resultadoId } = paramsValidation.parse(req.params);
@@ -72,8 +72,8 @@ export async function putResultado(app: FastifyInstance) {
                             }
                         }
                     },
-                    resultado: true,
-                    duracao: true
+                    timeCasaPontos: true,
+                    timeVisitantePontos: true
                 }
             })
 

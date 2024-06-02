@@ -15,14 +15,12 @@ export async function putRachao(app: FastifyInstance) {
             modalidade: z.string().toLowerCase().trim().min(1).optional(),
             diahora: z.coerce.date().optional().transform(val => {
                 if(val){
-                    const grossHours = val.getHours() - 3;
                     const grossMonth = val.getMonth() + 1;
 
                     const month = grossMonth.toString().length === 1 ? `0${grossMonth}` : grossMonth;
                     const date = val.getDate().toString().length === 1 ? `0${val.getDate()}` : val.getDate();
-                    const hours = grossHours.toString().length === 1 ? `0${grossHours}` : grossHours;
+                    const hours = val.getHours().toString().length === 1 ? `0${val.getHours()}` : val.getHours();
                     const minutes = val.getMinutes().toString().length === 1 ? `0${val.getMinutes()}` : val.getMinutes();
-                    console.log((val.getHours() - 3).toString());
                     return new Date(`${val?.getFullYear()}-${month}-${date}T${hours}:${minutes}`)
                 }
             }),

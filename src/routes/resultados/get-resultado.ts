@@ -60,8 +60,8 @@ export async function getResultado(app: FastifyInstance) {
                             }
                         }
                     },
-                    resultado: true,
-                    duracao: true
+                    timeCasaPontos: true,
+                    timeVisitantePontos: true
                 },
             })
 

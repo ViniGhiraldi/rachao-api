@@ -7,21 +7,21 @@ export async function createResultado(app: FastifyInstance) {
         const paramsValidation = z.object({
             rachaoId: z.string().cuid()
         })
-
+        
         const bodyValidation = z.object({
             timeCasaId: z.string().cuid(),
             timeVisitanteId: z.string().cuid(),
             timeVencedorId: z.string().cuid().optional(),
-            resultado: z.string().trim().min(1),
-            duracao: z.string().trim().min(1)
+            timeVisitantePontos: z.number().int().nonnegative().default(0),
+            timeCasaPontos: z.number().int().nonnegative().default(0)
         })
-
+        
         const { rachaoId } = paramsValidation.parse(req.params);
         const data = bodyValidation.parse(req.body);
 
-        if(data.timeCasaId === data.timeVisitanteId || (data.timeVencedorId !== data.timeCasaId && data.timeVencedorId !== data.timeVisitanteId)) {
-            return res.status(400).send({data: {message: "A team cannot play against itself"}})
-        }
+        if(data.timeCasaId === data.timeVisitanteId) return res.status(400).send({data: {message: "A team cannot play against itself"}})
+
+        if(data.timeVencedorId && (data.timeVencedorId !== data.timeCasaId && data.timeVencedorId !== data.timeVisitanteId)) return res.status(400).send({data: {message: "The winning team must be in the match"}})
 
         try {
             const result = await prisma.resultados.create({
@@ -73,8 +73,8 @@ export async function createResultado(app: FastifyInstance) {
                             }
                         }
                     },
-                    resultado: true,
-                    duracao: true
+                    timeCasaPontos: true,
+                    timeVisitantePontos: true
                 }
             })
 

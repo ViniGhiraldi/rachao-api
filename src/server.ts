@@ -7,6 +7,7 @@ import { createRachao, deleteRachao, getAllRachao, getRachao, putRachao } from "
 import { createJogador, deleteJogador, getAllJogadores, getAllJogadoresTime, getJogador, putJogador } from "./routes/jogadores";
 import { createDespesa, deleteDespesa, getAllDespesas, getDespesa, putDespesa } from "./routes/despesas";
 import { createResultado, deleteResultado, getAllResultados, getAllResultadosTime, getResultado, putResultado } from './routes/resultados';
+import { sorteio } from './routes/others';
 
 const server = fastify();
 
@@ -52,5 +53,8 @@ server.register(getResultado);
 server.register(getAllResultadosTime);
 server.register(putResultado);
 server.register(deleteResultado);
+
+// Outros
+server.register(sorteio)
 
 server.listen({ port: Number(process.env.PORT) || 3333 }, () => console.log(new Date()))

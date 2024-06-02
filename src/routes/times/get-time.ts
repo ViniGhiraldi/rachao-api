@@ -12,7 +12,7 @@ export async function getTime(app: FastifyInstance) {
         const { rachaoId, timeId } = paramsValidation.parse(req.params);
 
         try {
-            const timeResult = await prisma.times.findUnique({
+            const time = await prisma.times.findUnique({
                 where: {
                     id: timeId
                 },
@@ -61,14 +61,46 @@ export async function getTime(app: FastifyInstance) {
                 }
             })
 
-            const allJogadoresInRachaoResult = await prisma.jogadores.findMany({
+            const allJogadoresInRachaoWhitoutTime = await prisma.jogadores.findMany({
                 where: {
                     rachaoId: rachaoId,
-                    NOT: {
-                        time: {
-                            id: timeId
+                    timeId: null
+                },
+                select: {
+                    id: true,
+                    nome: true,
+                    imagem: {
+                        select: {
+                            id: true,
+                            name: true,
+                            path: true,
+                            size: true,
+                            url: true
                         }
+                    },
+                    presenca: true
+                },
+                orderBy: [
+                    {
+                        presenca: 'desc'
+                    },
+                    {
+                        nome: 'asc'
                     }
+                ]
+            })
+            
+            const allJogadoresInRachaoWhitTime = await prisma.jogadores.findMany({
+                where: {
+                    rachaoId: rachaoId,
+                    NOT: [
+                        {
+                            timeId: timeId
+                        },
+                        {
+                            timeId: null
+                        }
+                    ]
                 },
                 select: {
                     id: true,
@@ -91,11 +123,6 @@ export async function getTime(app: FastifyInstance) {
                 },
                 orderBy: [
                     {
-                        time: {
-                            nome: 'asc'
-                        }
-                    },
-                    {
                         presenca: 'desc'
                     },
                     {
@@ -103,8 +130,7 @@ export async function getTime(app: FastifyInstance) {
                     }
                 ]
             })
-
-            return res.status(200).send({data: {time: timeResult, jogadores: allJogadoresInRachaoResult}});
+            return res.status(200).send({data: {time, jogadores: {semTime: allJogadoresInRachaoWhitoutTime, comTime: allJogadoresInRachaoWhitTime}}});
         } catch (error) {
             return res.status(500).send({error});
         }

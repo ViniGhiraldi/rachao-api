@@ -30,6 +30,7 @@ export async function getAllJogadores(app: FastifyInstance) {
                         presenca: true,
                         time: {
                             select: {
+                                id: true,
                                 nome: true
                             }
                         },
@@ -65,6 +66,7 @@ export async function getAllJogadores(app: FastifyInstance) {
                         presenca: true,
                         time: {
                             select: {
+                                id: true,
                                 nome: true
                             }
                         },

@@ -79,8 +79,8 @@ model Resultados {
   timeCasaId String
   timeVisitanteId String
   timeVencedorId String?
-  resultado String
-  duracao String
+  timeCasaPontos Int @default(0)
+  timeVisitantePontos Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
