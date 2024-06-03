@@ -78,8 +78,8 @@ export async function getRachao(app: FastifyInstance) {
                                     },
                                 }
                             },
-                            resultado: true,
-                            duracao: true,
+                            timeCasaPontos: true,
+                            timeVisitantePontos: true,
                             createdAt: true
                         },
                         orderBy: {

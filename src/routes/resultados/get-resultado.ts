@@ -20,6 +20,7 @@ export async function getResultado(app: FastifyInstance) {
                     createdAt: true,
                     timeCasa: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -34,6 +35,7 @@ export async function getResultado(app: FastifyInstance) {
                     },
                     timeVisitante: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -48,6 +50,7 @@ export async function getResultado(app: FastifyInstance) {
                     },
                     timeVencedor: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {

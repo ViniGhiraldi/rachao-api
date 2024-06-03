@@ -11,7 +11,6 @@ export async function createResultado(app: FastifyInstance) {
         const bodyValidation = z.object({
             timeCasaId: z.string().cuid(),
             timeVisitanteId: z.string().cuid(),
-            timeVencedorId: z.string().cuid().optional(),
             timeVisitantePontos: z.number().int().nonnegative().default(0),
             timeCasaPontos: z.number().int().nonnegative().default(0)
         })
@@ -21,18 +20,20 @@ export async function createResultado(app: FastifyInstance) {
 
         if(data.timeCasaId === data.timeVisitanteId) return res.status(400).send({data: {message: "A team cannot play against itself"}})
 
-        if(data.timeVencedorId && (data.timeVencedorId !== data.timeCasaId && data.timeVencedorId !== data.timeVisitanteId)) return res.status(400).send({data: {message: "The winning team must be in the match"}})
+        const timeVencedorId = (data.timeCasaPontos > data.timeVisitantePontos) ? data.timeCasaId : (data.timeVisitantePontos > data.timeCasaPontos) ? data.timeVisitanteId : null;
 
         try {
             const result = await prisma.resultados.create({
                 data: {
                     ...data,
+                    timeVencedorId: timeVencedorId,
                     rachaoId: rachaoId
                 },
                 select: {
                     id: true,
                     timeCasa: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -47,6 +48,7 @@ export async function createResultado(app: FastifyInstance) {
                     },
                     timeVisitante: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -61,6 +63,7 @@ export async function createResultado(app: FastifyInstance) {
                     },
                     timeVencedor: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {

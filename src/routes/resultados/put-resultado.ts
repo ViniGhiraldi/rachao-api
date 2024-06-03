@@ -11,9 +11,8 @@ export async function putResultado(app: FastifyInstance) {
         const bodyValidation = z.object({
             timeCasaId: z.string().cuid(),
             timeVisitanteId: z.string().cuid(),
-            timeVencedorId: z.string().cuid().optional(),
-            timeVisitantePontos: z.number().int().nonnegative().optional(),
-            timeCasaPontos: z.number().int().nonnegative().optional()
+            timeVisitantePontos: z.number().int().nonnegative(),
+            timeCasaPontos: z.number().int().nonnegative()
         })
 
         const { resultadoId } = paramsValidation.parse(req.params);
@@ -21,17 +20,22 @@ export async function putResultado(app: FastifyInstance) {
 
         if(data.timeCasaId === data.timeVisitanteId) return res.status(400).send({data: {message: "A team cannot play against itself"}})
 
-        if(data.timeVencedorId !== data.timeCasaId && data.timeVencedorId !== data.timeVisitanteId) return res.status(400).send({data: {message: "The winning team must be in the match"}})
+        const timeVencedorId = (data.timeCasaPontos > data.timeVisitantePontos) ? data.timeCasaId : (data.timeVisitantePontos > data.timeCasaPontos) ? data.timeVisitanteId : null;
 
         try {
             const result = await prisma.resultados.update({
                 where: {
                     id: resultadoId
                 },
-                data: data,
+                data: {
+                    ...data,
+                    timeVencedorId: timeVencedorId
+                },
                 select: {
+                    id: true,
                     timeCasa: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -46,6 +50,7 @@ export async function putResultado(app: FastifyInstance) {
                     },
                     timeVisitante: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
@@ -60,6 +65,7 @@ export async function putResultado(app: FastifyInstance) {
                     },
                     timeVencedor: {
                         select: {
+                            id: true,
                             nome: true,
                             imagem: {
                                 select: {
